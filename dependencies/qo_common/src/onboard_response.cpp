@@ -1,0 +1,44 @@
+/* Copyright 2023 Cambridge Quantum Computing Limited
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+#include <qo_common/exceptions.h>
+#include <qo_common/key_response.h>
+#include <qo_common/onboard_response.h>
+#include <qo_common/utils.h>
+
+#include <cppcodec/base64_rfc4648.hpp>
+#include <fmt/format.h>
+#include <nlohmann/json.hpp>
+#include <spdlog/spdlog.h>
+
+using nlohmann::json;
+
+namespace Quantinuum::QuantumOrigin::Common
+{
+    OnboardResponse::OnboardResponse(const std::vector<std::string> &rawContent)
+    {
+        std::string contentStr = std::accumulate(rawContent.begin(), rawContent.end(), std::string(""));
+        if (contentStr.empty())
+        {
+            throw ApiError("Onboard response is empty. Expecting a json payload.");
+        }
+
+        auto jsonObj = json::parse(contentStr);
+        spdlog::trace("JSON response: {}", jsonObj.dump());
+
+        qoApiUID        = jsonObj["qo_api_uid"];
+        transportKey    = jsonObj["transport_key"];
+        encryptedSecret = decodedBase64Field(jsonObj, "encrypted_secret");
+    }
+} // namespace Quantinuum::QuantumOrigin::Common
