@@ -1,0 +1,9 @@
+# Ignore hidden files
+.*
+
+# Unignore this file
+!.gitignore
+
+# Ignore build output
+build
+cmake-build-*
