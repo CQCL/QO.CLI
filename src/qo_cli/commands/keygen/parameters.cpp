@@ -25,31 +25,34 @@
 namespace Quantinuum::QuantumOrigin::Cli::Commands::Keygen
 {
 
-    std::unordered_map<std::string, Common::KeyType> keyTypeMap{
+    std::unordered_map<std::string, Common::KeyAlgorithm> keyAlgorithmMap{
   // Classical algorithms
-        {             "AES",              Common::KeyType::AES},
-        {             "RSA",              Common::KeyType::RSA},
-        {              "EC",               Common::KeyType::EC},
+        {             "AES",              Common::KeyAlgorithm::AES},
+        {             "RSA",              Common::KeyAlgorithm::RSA},
+        {              "EC",               Common::KeyAlgorithm::EC},
 
  // PQC KEM algorithms
-        {            "BIKE",             Common::KeyType::BIKE},
-        {"CLASSIC-MCELIECE", Common::KeyType::CLASSIC_MCELIECE},
-        {             "HQC",              Common::KeyType::HQC},
-        {           "KYBER",            Common::KeyType::KYBER},
-        {      "NTRU-PRIME",       Common::KeyType::NTRU_PRIME},
+        {            "BIKE",             Common::KeyAlgorithm::BIKE},
+        {"CLASSIC-MCELIECE", Common::KeyAlgorithm::CLASSIC_MCELIECE},
+        {             "HQC",              Common::KeyAlgorithm::HQC},
+        {           "KYBER",            Common::KeyAlgorithm::KYBER},
+        {      "NTRU-PRIME",       Common::KeyAlgorithm::NTRU_PRIME},
 
  // PQC signature algorithms
-        {       "DILITHIUM",        Common::KeyType::DILITHIUM},
-        {          "FALCON",           Common::KeyType::FALCON},
-        {         "SPHINCS",          Common::KeyType::SPHINCS},
+        {       "DILITHIUM",        Common::KeyAlgorithm::DILITHIUM},
+        {          "FALCON",           Common::KeyAlgorithm::FALCON},
+        {         "SPHINCS",          Common::KeyAlgorithm::SPHINCS},
     };
 
     void KeygenParameters::print() const
     {
         spdlog::debug("cert                  = \"{}\"", apiParameters.authParameters.clientCertificateFilename);
         spdlog::debug("privateKeyForCert     = \"{}\"", apiParameters.authParameters.privateKeyFilename);
-        spdlog::debug("keyType               = \"{}\"", keyType ? magic_enum::enum_name(*keyType) : "not set (Default)");
-        spdlog::debug("keyparameters         = \"{}\"", keyParameters.json);
+        spdlog::debug("keyAlgorithm          = \"{}\"", keyAlgorithm ? magic_enum::enum_name(*keyAlgorithm) : "not set (Default)");
+        spdlog::debug("keyParameters         = \"{}\"", keyParameters.json);
+        spdlog::debug(
+            "keyType               = \"{}\"",
+            keyType ? fmt::format("{{{}, {}}}", magic_enum::enum_name(keyType->algorithm), keyType->getVariantValue()) : "not set (Default)");
         spdlog::debug("url                   = \"{}\"", apiParameters.url);
         spdlog::debug("nonce                 = \"{}\"", spdlog::to_hex(std::begin(decryptionParameters.nonce), std::end(decryptionParameters.nonce)));
         spdlog::debug("sharedSecret          = \"{}\"", spdlog::to_hex(std::begin(decryptionParameters.sharedSecret), std::end(decryptionParameters.sharedSecret)));

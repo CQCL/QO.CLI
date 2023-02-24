@@ -56,6 +56,8 @@ if(INCLUDE_SUPPORT_FOR_ONBOARD)
     add_compile_definitions(INCLUDE_SUPPORT_FOR_ONBOARD)
 endif(INCLUDE_SUPPORT_FOR_ONBOARD)
 
+##Temporarily disabled
+#
 
 if(INCLUDE_SUPPORT_FOR_USAGE)
     add_compile_definitions(INCLUDE_SUPPORT_FOR_USAGE)

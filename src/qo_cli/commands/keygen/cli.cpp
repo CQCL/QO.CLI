@@ -17,7 +17,6 @@
 #include "parameters.h"
 
 #include <CLI/CLI.hpp>
-#include <spdlog/spdlog.h>
 
 namespace Quantinuum::QuantumOrigin::Cli::Commands::Keygen
 {
@@ -33,14 +32,14 @@ namespace Quantinuum::QuantumOrigin::Cli::Commands::Keygen
         ////////////////////////////////////
         // Options for Command: KeyGen
         ////////////////////////////////////
-
-        CLI::Option *optKeygenKeyType       = parent.add_option("--keytype,-t", parameters.keyType, "Type of key requested. Mandatory.");
-        CLI::Option *optKeygenKeyParameters = parent.add_option("--keyparameters,-p", parameters.keyParameters.json, "The key's parameters as JSON. Mandatory.");
+        CLI::Option *optKeygenKeyType       = parent.add_option("--keytype,-t", parameters.keyType, "Key Requested. Mandatory if -a not set.");
+        CLI::Option *optKeygenKeyAlgorithm  = parent.add_option("--keyalg,-a", parameters.keyAlgorithm, "Type of key requested. Mandatory if -t not set.");
+        CLI::Option *optKeygenKeyParameters = parent.add_option("--keyparameters,-p", parameters.keyParameters.json, "The key's parameters as JSON. Mandatory if -a set");
 
         optKeygenKeyType->group("KeyGen");
         optKeygenKeyParameters->group("KeyGen");
-
-        optKeygenKeyType->transform(CLI::CheckedTransformer(keyTypeMap, CLI::ignore_case));
+        optKeygenKeyAlgorithm->group("KeyGen");
+        optKeygenKeyAlgorithm->transform(CLI::CheckedTransformer(keyAlgorithmMap, CLI::ignore_case));
     }
 
 } // namespace Quantinuum::QuantumOrigin::Cli::Commands::Keygen

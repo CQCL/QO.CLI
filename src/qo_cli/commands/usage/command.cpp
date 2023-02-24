@@ -73,6 +73,11 @@ namespace Quantinuum::QuantumOrigin::Cli::Commands::Usage
         {
             throw MissingParameterError("URL");
         }
+
+        if (getParameters().invalidTimeOrder())
+        {
+            throw UsageParametersException("The From date: " + getParameters().from + " is after the To date: " + getParameters().to);
+        }
     }
 
     void UsageCommand::execute()
@@ -99,7 +104,6 @@ namespace Quantinuum::QuantumOrigin::Cli::Commands::Usage
         spdlog::info(randResponse.contentStr);
 
         getParameters().outputParameters.getOutputStream() << randResponse.contentStr;
-
     }
 
 } // namespace Quantinuum::QuantumOrigin::Cli::Commands::Usage

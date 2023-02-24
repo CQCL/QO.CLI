@@ -36,7 +36,7 @@ namespace Quantinuum::QuantumOrigin::Cli::Commands::Decrypt
         uint64_t counter = 0;
         std::vector<uint8_t> seed;
         std::vector<uint8_t> encryptedNewKey;
-        std::optional<KeyTypeAndVariant> keyTypeAndVariant;
+        std::optional<Common::KeyType> keyType;
 
         OutputParameters outputParameters;
 

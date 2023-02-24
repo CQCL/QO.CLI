@@ -26,7 +26,7 @@ namespace Quantinuum::QuantumOrigin::Cli::Utils
     class KeyWriter
     {
       public:
-        explicit KeyWriter(std::optional<KeyTypeAndVariant> keyTypeAndVariant);
+        explicit KeyWriter(std::optional<Common::KeyType> keyType);
 
         /// Function for writing the information to a file in a certain format.
         /// @param outputFormat The format the decrypted information should be written in jwk/pem/base64/hex/raw.
@@ -35,7 +35,7 @@ namespace Quantinuum::QuantumOrigin::Cli::Utils
         void outputKeyData(const std::vector<uint8_t> &plainTextOut, Commands::OutputFormat outputFormat, std::ostream &outputStream);
 
       private:
-        std::optional<KeyTypeAndVariant> _keyTypeAndVariant;
+        std::optional<Common::KeyType> _keyType;
 
         /// jwk encoding of the plaintext
         /// @param pPlainTextOut is the pointer to the array of decrypted data

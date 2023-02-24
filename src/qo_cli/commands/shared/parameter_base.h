@@ -52,7 +52,7 @@ namespace Quantinuum::QuantumOrigin::Cli::Commands
         std::optional<OutputFormat> outputFormat;
         std::string outputFilename;
 
-        void addParametersToCli(CLI::App &parent, std::optional<std::vector<std::string>> allowed = std::nullopt);
+        void addParametersToCli(CLI::App &parent, std::optional<std::vector<OutputFormat>> allowed = std::nullopt);
         std::ostream &getOutputStream();
 
       private:

@@ -33,7 +33,7 @@ namespace Quantinuum::QuantumOrigin::Cli::Commands::Byok::Az
 
         // ApiParameters + DecryptionParameters
         const ByokParameters &byokParams;
-        std::optional<Common::KeyType> keyType;
+        std::optional<Common::KeyAlgorithm> keyAlgorithm;
         KeyParameters keyParameters;
 
         OutputParameters outputParameters;

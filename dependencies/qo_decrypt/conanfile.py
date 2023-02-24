@@ -8,7 +8,7 @@ class QoDecryptConan(ConanFile):
     description = "Quantum Origin Client-side Decryption Library"
 
     # NOTE: It seems that multiple requires statements are not supported. Keep everything in a single requires clause.
-    requires = "mbedtls/[>=3.0.0]", "qo_utils/1.3.2@quantinuum/main", "gtest/1.12.1"
+    requires = "mbedtls/[>=3.0.0]", "qo_utils/[^1.3.2]@quantinuum/main", "gtest/[^1.12.1]"
     #requires = "mbedtls/[>=3.0.0]", "qo_utils/1.3.0@quantinuum/local_builds", "gtest/1.11.0"
 
     # Binary configuration

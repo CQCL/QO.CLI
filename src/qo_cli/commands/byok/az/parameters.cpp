@@ -21,10 +21,10 @@
 namespace Quantinuum::QuantumOrigin::Cli::Commands::Byok::Az
 {
 
-    std::unordered_map<std::string, Common::KeyType> keyTypeMap{
+    std::unordered_map<std::string, Common::KeyAlgorithm> keyAlgorithmMap{
   // Supported algorithms
-        {"RSA", Common::KeyType::RSA},
-        { "EC",  Common::KeyType::EC}
+        {"RSA", Common::KeyAlgorithm::RSA},
+        { "EC",  Common::KeyAlgorithm::EC}
     };
 
     ByokAzParameters::ByokAzParameters(const ByokParameters &byokParams) : byokParams(byokParams) {}
@@ -34,7 +34,7 @@ namespace Quantinuum::QuantumOrigin::Cli::Commands::Byok::Az
         spdlog::debug("ByokAzParameters");
         spdlog::debug("cert                  = \"{}\"", byokParams.apiParameters.authParameters.clientCertificateFilename);
         spdlog::debug("privateKeyForCert     = \"{}\"", byokParams.apiParameters.authParameters.privateKeyFilename);
-        spdlog::debug("keyType               = \"{}\"", keyType ? magic_enum::enum_name(*keyType) : "not set (Default)");
+        spdlog::debug("keyAlgorithm               = \"{}\"", keyAlgorithm ? magic_enum::enum_name(*keyAlgorithm) : "not set (Default)");
         spdlog::debug("keyparameters         = \"{}\"", keyParameters.json);
         spdlog::debug("url                   = \"{}\"", byokParams.apiParameters.url);
         spdlog::debug(

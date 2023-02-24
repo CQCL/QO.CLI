@@ -24,7 +24,7 @@
 namespace Quantinuum::QuantumOrigin::Cli::Commands
 {
 
-    extern const std::unordered_map<std::string, Common::KeyType> keyTypeMap;
+    extern const std::unordered_map<std::string, Common::KeyAlgorithm> keyAlgorithmMap;
 
     /**
      * Represents the parameters required for authentication to the QO API

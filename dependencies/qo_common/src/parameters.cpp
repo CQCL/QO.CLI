@@ -64,7 +64,7 @@ namespace Quantinuum::QuantumOrigin::Common
 
     // Instantiate the template class with all the possible types, which allows us to keep the
     // implementation details out of the header
-    template class EnumWrapper<KeyType>;
+    template class EnumWrapper<KeyAlgorithm>;
     template class EnumWrapper<EncryptionScheme>;
     template class EnumWrapper<CertType>;
     template class EnumWrapper<OaepHashFunction>;

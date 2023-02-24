@@ -140,7 +140,7 @@ namespace Quantinuum::QuantumOrigin::Cli::Commands::RandomnessApi
 
         CliDecrypt randDecrypt(
             getParameters().decryptionParameters.sharedSecret, getParameters().decryptionParameters.nonce, resp.seed, resp.counter, resp.encryptedData,
-            KeyTypeAndVariant{CliLocal_Key_Type::KEY_TYPE_RAND, 0});
+            Common::KeyType{Common::Cli_Alg_Type::KEY_TYPE_RAND, Common::Cli_Rand_Variant::VARIANT_RAND});
         randDecrypt.runDecrypt(getParameters().outputParameters.outputFormat, getParameters().outputParameters.getOutputStream());
 #else
         spdlog::info("Encrypted response: {}", spdlog::to_hex(std::begin(resp.encryptedData), std::end(resp.encryptedData)));

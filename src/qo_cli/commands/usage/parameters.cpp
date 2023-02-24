@@ -14,13 +14,14 @@
  */
 #include "parameters.h"
 
+#include "boost/date_time/gregorian/gregorian.hpp"
 #include <magic_enum.hpp>
 #include <spdlog/fmt/bin_to_hex.h>
 #include <spdlog/spdlog.h>
 
 namespace Quantinuum::QuantumOrigin::Cli::Commands::Usage
 {
-
+    using namespace boost::gregorian;
     const std::unordered_map<std::string, Common::UsageQuery> usageQueryMap{
         {          "KEY-TYPE",           Common::UsageQuery::KEY_TYPE},
         {             "MONTH",              Common::UsageQuery::MONTH},
@@ -39,6 +40,13 @@ namespace Quantinuum::QuantumOrigin::Cli::Commands::Usage
         spdlog::debug("from                  = \"{}\"", from);
         spdlog::debug("group by              = \"{}\"", magic_enum::enum_name(groupBy));
         spdlog::debug("outputFilename        = \"{}\"", outputParameters.outputFilename);
+    }
+
+    bool UsageParameters::invalidTimeOrder() const
+    {
+        date dateFrom(from_simple_string(from));
+        date dateTo(from_simple_string(to));
+        return dateFrom > dateTo;
     }
 
 } // namespace Quantinuum::QuantumOrigin::Cli::Commands::Usage

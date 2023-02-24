@@ -36,7 +36,7 @@ namespace Quantinuum::QuantumOrigin::Common
         T _t;
     };
 
-    enum class KeyType
+    enum class KeyAlgorithm
     {
         AES,
         RSA,
@@ -54,7 +54,7 @@ namespace Quantinuum::QuantumOrigin::Common
         SPHINCS
     };
 
-    using KeyTypeEnum = EnumWrapper<KeyType>;
+    using KeyAlgorithmEnum = EnumWrapper<KeyAlgorithm>;
 
     enum class EncryptionScheme
     {

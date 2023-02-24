@@ -43,9 +43,9 @@ namespace Quantinuum::QuantumOrigin::Cli::Commands::Byok::Az
             {
                 getParameters().pemFileName = config->getAzConfig().getPemFileName();
             }
-            if (!getParameters().keyType)
+            if (!getParameters().keyAlgorithm)
             {
-                getParameters().keyType = config->getKeyParametersConfig().getKeyType();
+                getParameters().keyAlgorithm = config->getKeyParametersConfig().getKeyAlgorithm();
             }
             if (getParameters().keyParameters.json.empty())
             {
@@ -95,7 +95,7 @@ namespace Quantinuum::QuantumOrigin::Cli::Commands::Byok::Az
         payload["format"] = "PKCS8";
 
         Common::KeyRequest keyRequest(
-            getParameters().keyType.value_or(Common::KeyTypeEnum::Enum::RSA), payload.dump(), getParameters().byokParams.decryptionParameters.nonce,
+            getParameters().keyAlgorithm.value_or(Common::KeyAlgorithmEnum::Enum::RSA), payload.dump(), getParameters().byokParams.decryptionParameters.nonce,
             Quantinuum::QuantumOrigin::Common::EncryptionScheme::HKDF_AES_GCM, false);
         keyRequest.addRsaKeyEncryption(outString, true, Quantinuum::QuantumOrigin::Common::OaepHashFunctionEnum::Enum::SHA_1);
 
@@ -172,9 +172,8 @@ namespace Quantinuum::QuantumOrigin::Cli::Commands::Byok::Az
         outputStream << hsmJson.dump();
         outputStream.flush();
 
-
         spdlog::info("Byok file now created. To import into azure use");
-        if (getParameters().keyType == Common::KeyTypeEnum::Enum::EC)
+        if (getParameters().keyAlgorithm == Common::KeyAlgorithmEnum::Enum::EC)
         {
             spdlog::info(
                 "az keyvault key import --vault-name [value-name] --name [target key name] --byok-file {} --kty EC --curve [curve-name]",

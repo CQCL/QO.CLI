@@ -17,9 +17,7 @@
 #include "qo_common/parameters.h"
 
 #include <cppcodec/base64_rfc4648.hpp>
-#include <magic_enum.hpp>
 
-#include <regex>
 #include <string>
 
 namespace Quantinuum::QuantumOrigin::Common
@@ -29,8 +27,21 @@ namespace Quantinuum::QuantumOrigin::Common
     {
     }
 
-    KeyRequest::KeyRequest(KeyTypeEnum keyType, std::string keyParameters, std::vector<uint8_t> nonce, EncryptionSchemeEnum encryptionScheme, bool includePublic)
-        : CryptoRequest("keygen", std::move(nonce), encryptionScheme), _keyType(keyType), _keyParameters(std::move(keyParameters)), _includePublic(includePublic)
+    KeyRequest::KeyRequest(const KeyType &keyType, const std::string &nonce, EncryptionSchemeEnum encryptionScheme, bool includePublic)
+        : KeyRequest(keyType, cppcodec::base64_rfc4648::decode(nonce), encryptionScheme, includePublic)
+    {
+    }
+
+    KeyRequest::KeyRequest(const KeyType &keyType, std::vector<uint8_t> nonce, EncryptionSchemeEnum encryptionScheme, bool includePublic)
+        : CryptoRequest("keygen", std::move(nonce), encryptionScheme), _keyAlgorithm(this->getAlgorithmType(keyType)),
+          _keyParameters(std::move(this->getParameterJSON(keyType))), _includePublic(includePublic)
+    {
+    }
+
+    KeyRequest::KeyRequest(
+        KeyAlgorithmEnum keyAlgorithm, std::string keyParameters, std::vector<uint8_t> nonce, EncryptionSchemeEnum encryptionScheme, bool includePublic)
+        : CryptoRequest("keygen", std::move(nonce), encryptionScheme), _keyAlgorithm(keyAlgorithm), _keyParameters(std::move(keyParameters)),
+          _includePublic(includePublic)
     {
     }
 
@@ -44,7 +55,7 @@ namespace Quantinuum::QuantumOrigin::Common
     nlohmann::json KeyRequest::exportPayloadAsJson() const
     {
         nlohmann::json jsonRequestPayload;
-        jsonRequestPayload["key_type"] = std::string(_keyType);
+        jsonRequestPayload["key_type"] = std::string(_keyAlgorithm);
 
         jsonRequestPayload["key_parameters"] = nlohmann::json::parse(_keyParameters);
 
@@ -71,4 +82,27 @@ namespace Quantinuum::QuantumOrigin::Common
         return jsonRequestPayload;
     }
 
+    std::string KeyRequest::getParameterJSON(const KeyType &keyType)
+    {
+        nlohmann::json jsonRequest;
+        auto getVariant = [](const KeyType &keyType) { return std::get<1>(typeVariantNames.at(keyType.variant)); };
+        if (Cli_Alg_Type::KEY_TYPE_AES == keyType.algorithm || Cli_Alg_Type::KEY_TYPE_RSA == keyType.algorithm)
+        {
+            jsonRequest["size"] = std::get<int>(getVariant(keyType));
+        }
+        else if (keyType.algorithm == Cli_Alg_Type::KEY_TYPE_EC)
+        {
+            jsonRequest["curve"] = std::get<std::string>(getVariant(keyType));
+        }
+        else
+        {
+            jsonRequest["variant"] = std::get<std::string>(getVariant(keyType));
+        }
+        return jsonRequest.dump();
+    }
+
+    std::string KeyRequest::getAlgorithmType(const KeyType &keyType)
+    {
+        return std::get<0>(typeVariantNames.at(keyType.variant));
+    }
 } // namespace Quantinuum::QuantumOrigin::Common

@@ -48,9 +48,9 @@ namespace Quantinuum::QuantumOrigin::Cli
     }
 
     KeyParametersConfig::KeyParametersConfig(
-        const std::string &nonceFormatString, const std::string &nonceString, std::string keyParameters, std::optional<Common::KeyType> keyType,
+        const std::string &nonceFormatString, const std::string &nonceString, std::string keyParameters, std::optional<Common::KeyAlgorithm> keyAlgorithm,
         const std::string &sharedSecretFormatString, const std::string &sharedSecretString)
-        : keyParameters(std::move(keyParameters)), keyType(keyType)
+        : keyParameters(std::move(keyParameters)), keyAlgorithm(keyAlgorithm)
     {
         Commands::DataFormat nonceFormat = Commands::DataFormat::Base64;
         if (!nonceFormatString.empty())
@@ -86,8 +86,8 @@ namespace Quantinuum::QuantumOrigin::Cli
     }
 
     KeyParametersConfig::KeyParametersConfig(
-        std::vector<uint8_t> nonce, std::string keyParameters, std::optional<Common::KeyType> keyType, std::vector<uint8_t> sharedSecret)
-        : nonce(std::move(nonce)), keyParameters(std::move(keyParameters)), keyType(keyType), sharedSecret(std::move(sharedSecret))
+        std::vector<uint8_t> nonce, std::string keyParameters, std::optional<Common::KeyAlgorithm> keyAlgorithm, std::vector<uint8_t> sharedSecret)
+        : nonce(std::move(nonce)), keyParameters(std::move(keyParameters)), keyAlgorithm(keyAlgorithm), sharedSecret(std::move(sharedSecret))
     {
     }
 
@@ -123,15 +123,21 @@ namespace Quantinuum::QuantumOrigin::Cli
         if (cfg["key_type"])
         {
             auto keyTypeString = cfg["key_type"].as<std::string>();
+            keyType            = Common::parseKeyTypeAndVariantString(keyTypeString);
+        }
 
-            auto found = Commands::keyTypeMap.find(keyTypeString);
-            if (found != Commands::keyTypeMap.end())
+        if (cfg["key_algorithm"])
+        {
+            auto keyAlgorithmString = cfg["key_algorithm"].as<std::string>();
+
+            auto found = Commands::keyAlgorithmMap.find(keyAlgorithmString);
+            if (found != Commands::keyAlgorithmMap.end())
             {
-                keyType = found->second;
+                keyAlgorithm = found->second;
             }
             else
             {
-                localKeyType = parseKeyTypeAndVariantString(keyTypeString);
+                localKeyType = Common::parseKeyTypeAndVariantString(keyAlgorithmString);
             }
         }
 

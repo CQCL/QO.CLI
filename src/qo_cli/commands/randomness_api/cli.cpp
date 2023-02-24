@@ -25,7 +25,8 @@ namespace Quantinuum::QuantumOrigin::Cli::Commands::RandomnessApi
     {
         parameters.apiParameters.addParametersToCli(parent);
         parameters.decryptionParameters.addParametersToCli(parent);
-        parameters.outputParameters.addParametersToCli(parent, std::vector<std::string>{"base64", "hex", "raw"}); // pem/jwk wouldn't make sense for randomness
+        parameters.outputParameters.addParametersToCli(
+            parent, std::vector<OutputFormat>{OutputFormat::Base64, OutputFormat::Hex, OutputFormat::Binary}); // pem/jwk wouldn't make sense for randomness
 
         CLI::Option *optRandomnessSize = parent.add_option("randSize", parameters.randSize, "Number of bytes of randomness. Default = 128.")->default_val(128);
 

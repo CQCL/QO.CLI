@@ -20,23 +20,23 @@
 namespace Quantinuum::QuantumOrigin::Cli::Commands
 {
 
-    const std::unordered_map<std::string, Common::KeyType> keyTypeMap{
+    const std::unordered_map<std::string, Common::KeyAlgorithm> keyAlgorithmMap{
   // Classical algorithms
-        {             "AES",              Common::KeyType::AES},
-        {             "RSA",              Common::KeyType::RSA},
-        {              "EC",               Common::KeyType::EC},
+        {             "AES",              Common::KeyAlgorithm::AES},
+        {             "RSA",              Common::KeyAlgorithm::RSA},
+        {              "EC",               Common::KeyAlgorithm::EC},
 
  // PQC KEM algorithms
-        {            "BIKE",             Common::KeyType::BIKE},
-        {"CLASSIC-MCELIECE", Common::KeyType::CLASSIC_MCELIECE},
-        {             "HQC",              Common::KeyType::HQC},
-        {           "KYBER",            Common::KeyType::KYBER},
-        {      "NTRU-PRIME",       Common::KeyType::NTRU_PRIME},
+        {            "BIKE",             Common::KeyAlgorithm::BIKE},
+        {"CLASSIC-MCELIECE", Common::KeyAlgorithm::CLASSIC_MCELIECE},
+        {             "HQC",              Common::KeyAlgorithm::HQC},
+        {           "KYBER",            Common::KeyAlgorithm::KYBER},
+        {      "NTRU-PRIME",       Common::KeyAlgorithm::NTRU_PRIME},
 
  // PQC signature algorithms
-        {       "DILITHIUM",        Common::KeyType::DILITHIUM},
-        {          "FALCON",           Common::KeyType::FALCON},
-        {         "SPHINCS",          Common::KeyType::SPHINCS},
+        {       "DILITHIUM",        Common::KeyAlgorithm::DILITHIUM},
+        {          "FALCON",           Common::KeyAlgorithm::FALCON},
+        {         "SPHINCS",          Common::KeyAlgorithm::SPHINCS},
     };
 
     AuthParameters::~AuthParameters()

@@ -81,15 +81,15 @@ namespace Quantinuum::QuantumOrigin::Cli::Commands
     CliDecrypt::CliDecrypt(const std::vector<uint8_t> &sharedSecret, const std::vector<uint8_t> &nonce, const Quantinuum::QuantumOrigin::Common::KeyResponse &keyResponse)
         : _sharedSecret(sharedSecret.begin(), sharedSecret.end()), _nonce(nonce.begin(), nonce.end()), _seed(keyResponse.encrypted.seed),
           _counter(keyResponse.encrypted.counter), _encryptedData(keyResponse.encrypted.encryptedData),
-          _keyTypeAndVariant(parseKeyTypeAndVariantString(keyResponse.contentType))
+          _keyType(Common::parseKeyTypeAndVariantString(keyResponse.contentType))
     {
     }
 
     CliDecrypt::CliDecrypt(
         const std::vector<uint8_t> &sharedSecret, const std::vector<uint8_t> &nonce, std::vector<uint8_t> seed, uint64_t counter, std::vector<uint8_t> encryptedData,
-        std::optional<KeyTypeAndVariant> keyTypeAndVariant)
+        std::optional<Common::KeyType> keyTypeAndVariant)
         : _sharedSecret(sharedSecret.begin(), sharedSecret.end()), _nonce(nonce.begin(), nonce.end()), _seed(std::move(seed)), _counter(counter),
-          _encryptedData(std::move(encryptedData)), _keyTypeAndVariant(std::move(keyTypeAndVariant))
+          _encryptedData(std::move(encryptedData)), _keyType(std::move(keyTypeAndVariant))
     {
     }
 
@@ -141,7 +141,7 @@ namespace Quantinuum::QuantumOrigin::Cli::Commands
         }
         _pPlainTextOut.resize(plainTextBytesWritten);
 
-        if (_keyTypeAndVariant == KeyTypeAndVariant{CliLocal_Key_Type::KEY_TYPE_EC, CliLocal_EC_Variant::X25519})
+        if (_keyType == Common::KeyType{Common::Cli_Alg_Type::KEY_TYPE_EC, Common::Cli_EC_Variant::X25519})
         {
             spdlog::debug("Response contains a content type that matched EC-X25519, encode it's private key part differently");
             encode_ecx_25519(_pPlainTextOut);
@@ -156,10 +156,10 @@ namespace Quantinuum::QuantumOrigin::Cli::Commands
         // Set default output format based on key type
         if (!outputFormat)
         {
-            outputFormat = defaultOutputFormat(_keyTypeAndVariant);
+            outputFormat = defaultOutputFormat(_keyType);
         }
 
-        Utils::KeyWriter keyWriter(_keyTypeAndVariant);
+        Utils::KeyWriter keyWriter(_keyType);
         keyWriter.outputKeyData(_pPlainTextOut, *outputFormat, outputStream);
     }
 

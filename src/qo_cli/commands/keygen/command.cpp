@@ -21,7 +21,6 @@
 
 #include <qo_common/exceptions.h>
 #include <qo_common/key_request.h>
-#include <qo_common/key_response.h>
 #include <qo_common/service.h>
 
 #include <spdlog/fmt/bin_to_hex.h>
@@ -47,6 +46,10 @@ namespace Quantinuum::QuantumOrigin::Cli::Commands::Keygen
             if (!getParameters().keyType)
             {
                 getParameters().keyType = config->getKeyParametersConfig().getKeyType();
+            }
+            if (!getParameters().keyAlgorithm)
+            {
+                getParameters().keyAlgorithm = config->getKeyParametersConfig().getKeyAlgorithm();
             }
             if (getParameters().keyParameters.json.empty())
             {
@@ -92,12 +95,11 @@ namespace Quantinuum::QuantumOrigin::Cli::Commands::Keygen
                 throw std::runtime_error("Either a client ID or client cert/key parameters are required");
             }
         }
-
-        if (!getParameters().keyType)
+        if (!getParameters().keyType && !getParameters().keyAlgorithm)
         {
-            throw MissingParameterError("Key type");
+            throw MissingParameterError("Key type or algorithm");
         }
-        if (getParameters().keyParameters.json.empty())
+        if (getParameters().keyAlgorithm && getParameters().keyParameters.json.empty())
         {
             throw MissingParameterError("Key parameters");
         }
@@ -146,18 +148,32 @@ namespace Quantinuum::QuantumOrigin::Cli::Commands::Keygen
                 getParameters().apiParameters.url, getParameters().apiParameters.authParameters.clientId, getParameters().apiParameters.authParameters.apiKey);
         }
 
-        Common::KeyRequest keyRequest(*getParameters().keyType, getParameters().keyParameters.json, getParameters().decryptionParameters.nonce);
-        auto keyResponse = Utils::sendRequestWithRetries(*keyGenConnection, keyRequest);
-
+        auto retrieveKey = [&](auto &keyRequest)
+        {
+            auto keyResponse = Utils::sendRequestWithRetries(*keyGenConnection, keyRequest);
 #ifdef INCLUDE_SUPPORT_FOR_KEYDECRYPT
-        spdlog::info("Working on [keydecrypt]");
-        spdlog::debug("Encoded payload len = {}", keyResponse.encrypted.encryptedData.size());
+            spdlog::info("Working on [keydecrypt]");
+            spdlog::debug("Encoded payload len = {}", keyResponse.encrypted.encryptedData.size());
 
-        CliDecrypt keyDecrypt(getParameters().decryptionParameters.sharedSecret, getParameters().decryptionParameters.nonce, keyResponse);
-        keyDecrypt.runDecrypt(getParameters().outputParameters.outputFormat, getParameters().outputParameters.getOutputStream());
+            CliDecrypt keyDecrypt(getParameters().decryptionParameters.sharedSecret, getParameters().decryptionParameters.nonce, keyResponse);
+            keyDecrypt.runDecrypt(getParameters().outputParameters.outputFormat, getParameters().outputParameters.getOutputStream());
 #else
-        spdlog::trace("Encrypted response: {}", spdlog::to_hex(std::begin(keyResponse.encrypted.encryptedData), std::end(keyResponse.encrypted.encryptedData)));
+            spdlog::trace("Encrypted response: {}", spdlog::to_hex(std::begin(keyResponse.encrypted.encryptedData), std::end(keyResponse.encrypted.encryptedData)));
 #endif // INCLUDE_SUPPORT_FOR_KEYDECRYPT
+        };
+
+        // Default to using -t input which overrides any -a/-p inputs
+
+        if (getParameters().keyType)
+        {
+            Common::KeyRequest keyRequest(*getParameters().keyType, getParameters().decryptionParameters.nonce);
+            retrieveKey(keyRequest);
+        }
+        else
+        {
+            Common::KeyRequest keyRequest(*getParameters().keyAlgorithm, getParameters().keyParameters.json, getParameters().decryptionParameters.nonce);
+            retrieveKey(keyRequest);
+        }
     }
 
 } // namespace Quantinuum::QuantumOrigin::Cli::Commands::Keygen

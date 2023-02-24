@@ -54,9 +54,9 @@ namespace Quantinuum::QuantumOrigin::Cli
         explicit KeyParametersConfig(const YAML::Node &cfg);
         KeyParametersConfig() = default;
         KeyParametersConfig(
-            const std::string &nonceFormatString, const std::string &nonceString, std::string keyParameters, std::optional<Common::KeyType> keyType,
+            const std::string &nonceFormatString, const std::string &nonceString, std::string keyParameters, std::optional<Common::KeyAlgorithm> keyAlgorithm,
             const std::string &sharedSecretFormatString, const std::string &sharedSecretString);
-        KeyParametersConfig(std::vector<uint8_t> nonce, std::string keyParameters, std::optional<Common::KeyType> keyType, std::vector<uint8_t> sharedSecret);
+        KeyParametersConfig(std::vector<uint8_t> nonce, std::string keyParameters, std::optional<Common::KeyAlgorithm> keyAlgorithm, std::vector<uint8_t> sharedSecret);
 
         [[nodiscard]] const std::vector<uint8_t> &getNonce() const
         {
@@ -68,12 +68,17 @@ namespace Quantinuum::QuantumOrigin::Cli
             return keyParameters;
         }
 
+        [[nodiscard]] const std::optional<Common::KeyAlgorithm> &getKeyAlgorithm() const
+        {
+            return keyAlgorithm;
+        }
+
         [[nodiscard]] const std::optional<Common::KeyType> &getKeyType() const
         {
             return keyType;
         }
 
-        [[nodiscard]] const std::optional<KeyTypeAndVariant> &getLocalKeyType() const
+        [[nodiscard]] const std::optional<Common::KeyType> &getLocalKeyType() const
         {
             return localKeyType;
         }
@@ -87,7 +92,8 @@ namespace Quantinuum::QuantumOrigin::Cli
         std::vector<uint8_t> nonce;
         std::string keyParameters;
         std::optional<Common::KeyType> keyType;
-        std::optional<KeyTypeAndVariant> localKeyType;
+        std::optional<Common::KeyAlgorithm> keyAlgorithm;
+        std::optional<Common::KeyType> localKeyType;
         std::vector<uint8_t> sharedSecret;
     };
 

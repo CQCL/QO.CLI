@@ -52,11 +52,14 @@ namespace Quantinuum::QuantumOrigin::Cli::Commands::Decrypt
         CLI::Option *optKeyDecryptCipherTextCounter =
             parent.add_option("--counter,-c", parameters.counter, "Starting counter value as received in the keygen response as \"counter\". Optional. default=0");
 
-        CLI::Option *optKeyDecryptInputFilename = parent.add_option(
-            "--inputfile,-i", parameters.inputFilename,
-            "Filename from where to read the keygen response. The data must be supplied in json+base64 format. Optional. Default=stdin.");
+        CLI::Option *optKeyDecryptInputFilename =
+            parent
+                .add_option(
+                    "--inputfile,-i", parameters.inputFilename,
+                    "Filename from where to read the keygen response. The data must be supplied in json+base64 format. Optional. Default=stdin.")
+                ->default_val("stdin");
 
-        CLI::Option *optLocalKeyType = parent.add_option("--keytype,-t", parameters.keyTypeAndVariant, "Type of key being decrypted.");
+        CLI::Option *optLocalKeyType = parent.add_option("--keytype,-t", parameters.keyType, "Type of key being decrypted.");
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // IMPORTANT: NOTE ON THE TWO WAYS IN WHICH THE KEYDECRYPT COMMAND CAN BE USED
@@ -108,7 +111,7 @@ namespace Quantinuum::QuantumOrigin::Cli::Commands::Decrypt
         // Validation and Transformation Rules
         optKeyDecryptCipherTextSeedFormat->transform(CLI::CheckedTransformer(dataFormatMap, CLI::ignore_case));
         optKeyDecryptCipherTextNewKeyFormat->transform(CLI::CheckedTransformer(dataFormatMap, CLI::ignore_case));
-        optLocalKeyType->transform(CLI::CheckedTransformer(supportedKeyTypes, CLI::ignore_case));
+        optLocalKeyType->transform(CLI::CheckedTransformer(Common::supportedKeyTypes, CLI::ignore_case));
 
         optKeyDecryptCipherTextSeed->transform(transformFilenameToValue);
         optKeyDecryptCipherTextNewKey->transform(transformFilenameToValue);
