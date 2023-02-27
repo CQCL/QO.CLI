@@ -14,6 +14,7 @@
  */
 #pragma once
 
+#include "qo_common/key_parameters.h"
 #include "qo_common/key_response.h"
 #include "qo_common/parameters.h"
 #include "qo_common/request.h"
@@ -42,13 +43,28 @@ namespace Quantinuum::QuantumOrigin::Common
             bool includePublic = false);
 
         /// Constructor that sets the body of the curl request.
+        /// @param keyAndVariant The key type and variant requested e.g. RSA-256, HQC-256. For full list see API specification.
+        /// @param nonce The nonce that will be used for the request. Format base64.
+        /// @param encryptionScheme The scheme under which the returned key data should be encrypted.
+        /// @param includePublic Whether the corresponding public key should be included separate in the returned data.
+        KeyRequest(const KeyType &keyType, const std::string &nonce, EncryptionSchemeEnum encryptionScheme = EncryptionScheme::HKDF_AES_GCM, bool includePublic = false);
+
+        /// Constructor that sets the body of the curl request.
+        /// @param keyAndVariant The key type and variant requested e.g. RSA-256, HQC-256. For full list see API specification.
+        /// @param nonce The nonce that will be used for the request. Format raw bytes.
+        /// @param encryptionScheme The scheme under which the returned key data should be encrypted.
+        /// @param includePublic Whether the corresponding public key should be included separate in the returned data.
+        KeyRequest(
+            const KeyType &keyType, std::vector<uint8_t> nonce, EncryptionSchemeEnum encryptionScheme = EncryptionScheme::HKDF_AES_GCM, bool includePublic = false);
+
+        /// Constructor that sets the body of the curl request.
         /// @param keyType The key of key requested e.g AES, RSA, FALCON. For full list see API specification
         /// @param keyParameters The associated parameters for the chosen keytype. For AES this is e.g. '{"size":256}'
         /// @param nonce The nonce that will be used for the request. Format raw bytes.
         /// @param encryptionScheme The scheme under which the returned key data should be encrypted.
         /// @param includePublic Whether the corresponding public key should be included separate in the returned data.
         KeyRequest(
-            KeyTypeEnum keyType, std::string keyParameters, std::vector<uint8_t> nonce, EncryptionSchemeEnum encryptionScheme = EncryptionScheme::HKDF_AES_GCM,
+            KeyAlgorithmEnum keyType, std::string keyParameters, std::vector<uint8_t> nonce, EncryptionSchemeEnum encryptionScheme = EncryptionScheme::HKDF_AES_GCM,
             bool includePublic = false);
 
         void addRsaKeyEncryption(std::string publicKey, bool aesKeyWrap, OaepHashFunctionEnum hashFunc);
@@ -56,10 +72,14 @@ namespace Quantinuum::QuantumOrigin::Common
         /// Exports the class parameters as JSON. Will form the body of a key request.
         [[nodiscard]] nlohmann::json exportPayloadAsJson() const override;
 
+        [[nodiscard]] static std::string getParameterJSON(const KeyType &keyType);
+
+        [[nodiscard]] static std::string getAlgorithmType(const KeyType &keyType);
+
         using Response = KeyResponse;
 
       private:
-        KeyTypeEnum _keyType;
+        KeyAlgorithmEnum _keyAlgorithm;
         std::string _keyParameters;
 
         bool _includePublic = false;

@@ -33,7 +33,7 @@ namespace Quantinuum::QuantumOrigin::Cli::Commands
         {  "none",   OutputFormat::None},
     };
 
-    void OutputParameters::addParametersToCli(CLI::App &parent, std::optional<std::vector<std::string>> allowed)
+    void OutputParameters::addParametersToCli(CLI::App &parent, std::optional<std::vector<OutputFormat>> allowed)
     {
         CLI::Option *optOutputFormat = parent.add_option(
             "--outputformat,-O", outputFormat,

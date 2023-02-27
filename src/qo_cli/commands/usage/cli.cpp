@@ -23,10 +23,10 @@ namespace Quantinuum::QuantumOrigin::Cli::Commands::Usage
     void UsageCliCommand::addParameters(CLI::App &parent, UsageParameters &parameters)
     {
         parameters.apiParameters.addParametersToCli(parent);
-        parameters.outputParameters.addParametersToCli(parent, std::vector<std::string>{"raw"}); // pem/jwk wouldn't make sense for output
+        parameters.outputParameters.addParametersToCli(parent, std::vector<OutputFormat>{OutputFormat::Binary});
 
-        CLI::Option *optUsageFrom = parent.add_option("--from", parameters.from, "Date start to search");
-        CLI::Option *optUsageTo = parent.add_option("--to", parameters.to, "Date end to search");
+        CLI::Option *optUsageFrom    = parent.add_option("--from", parameters.from, "Date start to search");
+        CLI::Option *optUsageTo      = parent.add_option("--to", parameters.to, "Date end to search");
         CLI::Option *optUsageGroupBy = parent.add_option("--groupby", parameters.groupBy, "The usage data query");
 
         optUsageFrom->group("Usage");

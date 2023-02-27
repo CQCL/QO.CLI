@@ -36,6 +36,13 @@ namespace Quantinuum::QuantumOrigin::Cli::Commands::Usage
         OutputParameters outputParameters;
 
         void print() const override;
+        bool invalidTimeOrder() const;
+    };
+
+    class UsageParametersException : public std::runtime_error
+    {
+      public:
+        UsageParametersException(const std::string &error) : std::runtime_error(error){};
     };
 
 } // namespace Quantinuum::QuantumOrigin::Cli::Commands::Usage

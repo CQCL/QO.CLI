@@ -50,6 +50,7 @@ namespace Quantinuum::QuantumOrigin::Common
         if (apiKey)
         {
             addHeader(fmt::format("qo-api-key: {}", *apiKey));
+            addHeader(fmt::format("qo-subscription-id: {}", *apiKey));
         }
         initializeLibCurl();
     }
@@ -59,6 +60,7 @@ namespace Quantinuum::QuantumOrigin::Common
         if (apiKey)
         {
             addHeader(fmt::format("qo-api-key: {}", *apiKey));
+            addHeader(fmt::format("qo-subscription-id: {}", *apiKey));
         }
         addHeader(fmt::format("uuid: {}", clientId));
         _clientIdProvided = true;
@@ -219,7 +221,6 @@ namespace Quantinuum::QuantumOrigin::Common
         // Disable usage of signals which can cause crashes
         setCurlOption(CURLOPT_NOSIGNAL, 1L);
 
-        setCurlOption(CURLOPT_HTTPPOST, true);
         addHeader("Content-Type: application/json");
         addHeader("Accept: application/json");
 
@@ -296,7 +297,6 @@ namespace Quantinuum::QuantumOrigin::Common
             setCurlOption(CURLOPT_URL, url.c_str());
 
             spdlog::debug("Making request to '{}'", url);
-            setCurlOption(CURLOPT_HTTPPOST, true);
             auto bodyData = request.exportPayloadAsJson().dump();
 
             setCurlOption(CURLOPT_POSTFIELDS, bodyData.data());

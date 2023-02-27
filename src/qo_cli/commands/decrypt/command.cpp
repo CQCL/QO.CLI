@@ -64,8 +64,8 @@ namespace Quantinuum::QuantumOrigin::Cli::Commands::Decrypt
 
                 try
                 {
-                    auto keyTypeString                = keyFile.GetContentType();
-                    getParameters().keyTypeAndVariant = parseKeyTypeAndVariantString(keyTypeString);
+                    auto keyTypeString      = keyFile.GetContentType();
+                    getParameters().keyType = Common::parseKeyTypeAndVariantString(keyTypeString);
                 }
                 catch (const std::exception &ex)
                 {
@@ -82,7 +82,7 @@ namespace Quantinuum::QuantumOrigin::Cli::Commands::Decrypt
             }
         }
 
-        if (!getParameters().keyTypeAndVariant)
+        if (!getParameters().keyType)
         {
             spdlog::warn("No key type has been specified, treating key as generic");
         }
@@ -100,7 +100,7 @@ namespace Quantinuum::QuantumOrigin::Cli::Commands::Decrypt
 
         CliDecrypt keyDecrypt(
             getParameters().decryptionParameters.sharedSecret, getParameters().decryptionParameters.nonce, getParameters().seed, getParameters().counter,
-            getParameters().encryptedNewKey, getParameters().keyTypeAndVariant);
+            getParameters().encryptedNewKey, getParameters().keyType);
         keyDecrypt.runDecrypt(getParameters().outputParameters.outputFormat, getParameters().outputParameters.getOutputStream());
     }
 

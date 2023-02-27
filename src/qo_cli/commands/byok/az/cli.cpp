@@ -32,18 +32,18 @@ namespace Quantinuum::QuantumOrigin::Cli::Commands::Byok::Az
         ////////////////////////////////////
         // Options for Command: Kms
         ////////////////////////////////////
-        CLI::Option *optKmsKeyType       = parent.add_option("--keytype,-t", parameters.keyType, "Type of key requested. Mandatory.");
+        CLI::Option *optKmsKeyAlgorithm  = parent.add_option("--keyalgorithm,-a", parameters.keyAlgorithm, "Type of key generation Algorithm requested. Mandatory.");
         CLI::Option *optKmsKeyParameters = parent.add_option("--keyparameters,-p", parameters.keyParameters.json, "The key's parameters as JSON. Mandatory.");
         CLI::Option *optKmsKeyId         = parent.add_option("--kid", parameters.kId, "The wrapping key's Id in Azure. Mandatory.");
         CLI::Option *optKmsPemFileName =
             parent.add_option("--inkey", parameters.pemFileName, "Wrapping key generated in Azure. Target key will be encrypted with this for importing into Azure.");
 
-        optKmsKeyType->group("Az");
+        optKmsKeyAlgorithm->group("Az");
         optKmsKeyParameters->group("Az");
         optKmsKeyId->group("Az");
         optKmsPemFileName->group("Az");
 
-        optKmsKeyType->transform(CLI::CheckedTransformer(keyTypeMap, CLI::ignore_case));
+        optKmsKeyAlgorithm->transform(CLI::CheckedTransformer(keyAlgorithmMap, CLI::ignore_case));
     }
 
 } // namespace Quantinuum::QuantumOrigin::Cli::Commands::Byok::Az

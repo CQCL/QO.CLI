@@ -25,7 +25,7 @@
 namespace Quantinuum::QuantumOrigin::Cli::Utils
 {
 
-    KeyWriter::KeyWriter(std::optional<KeyTypeAndVariant> keyTypeAndVariant) : _keyTypeAndVariant(std::move(keyTypeAndVariant)) {}
+    KeyWriter::KeyWriter(std::optional<Common::KeyType> keyType) : _keyType(std::move(keyType)) {}
 
     void KeyWriter::emitResult(std::ostream &outputStream, const std::string &content)
     {
@@ -43,28 +43,28 @@ namespace Quantinuum::QuantumOrigin::Cli::Utils
         std::string outputString;
         const size_t CHARS_PER_LINE = 64;
 
-        if (_keyTypeAndVariant == KeyTypeAndVariant{CliLocal_Key_Type::KEY_TYPE_AES, CliLocal_AES_Variant::AES_128})
+        if (_keyType == Common::KeyType{Common::Cli_Alg_Type::KEY_TYPE_AES, Common::Cli_AES_Variant::AES_128})
         {
             algorithmString = "A128KW";
         }
-        else if (_keyTypeAndVariant == KeyTypeAndVariant{CliLocal_Key_Type::KEY_TYPE_AES, CliLocal_AES_Variant::AES_192})
+        else if (_keyType == Common::KeyType{Common::Cli_Alg_Type::KEY_TYPE_AES, Common::Cli_AES_Variant::AES_192})
         {
             algorithmString = "A192KW";
         }
-        else if (_keyTypeAndVariant == KeyTypeAndVariant{CliLocal_Key_Type::KEY_TYPE_AES, CliLocal_AES_Variant::AES_256})
+        else if (_keyType == Common::KeyType{Common::Cli_Alg_Type::KEY_TYPE_AES, Common::Cli_AES_Variant::AES_256})
         {
             algorithmString = "A256KW";
         }
-        else if (!_keyTypeAndVariant)
+        else if (!_keyType)
         {
             // Generic
             algorithmString = "UNSPECIFIED";
         }
         else
         {
-            auto found = std::find_if(std::begin(supportedKeyTypes), std::end(supportedKeyTypes), [&](auto &&p) { return p.second == _keyTypeAndVariant; });
+            auto found = std::find_if(std::begin(Common::supportedKeyTypes), std::end(Common::supportedKeyTypes), [&](auto &&p) { return p.second == _keyType; });
 
-            if (found != supportedKeyTypes.end())
+            if (found != Common::supportedKeyTypes.end())
             {
                 // All others
                 algorithmString = found->first;
@@ -130,33 +130,33 @@ namespace Quantinuum::QuantumOrigin::Cli::Utils
         std::string outputString;
         const size_t CHARS_PER_LINE = 64;
 
-        if (_keyTypeAndVariant == KeyTypeAndVariant{CliLocal_Key_Type::KEY_TYPE_EC, CliLocal_EC_Variant::X25519})
+        if (_keyType == Common::KeyType{Common::Cli_Alg_Type::KEY_TYPE_EC, Common::Cli_EC_Variant::X25519})
         {
             // EC-X25519 is treated separately, its not similar to any other EC type key
             headerText = "PRIVATE KEY";
         }
-        else if (_keyTypeAndVariant && _keyTypeAndVariant->keyType == CliLocal_Key_Type::KEY_TYPE_RSA)
+        else if (_keyType && _keyType->algorithm == Common::Cli_Alg_Type::KEY_TYPE_RSA)
         {
             // -----BEGIN RSA PRIVATE KEY-----
             // -----END RSA PRIVATE KEY-----
             headerText = "RSA PRIVATE KEY";
         }
-        else if (_keyTypeAndVariant && _keyTypeAndVariant->keyType == CliLocal_Key_Type::KEY_TYPE_EC)
+        else if (_keyType && _keyType->algorithm == Common::Cli_Alg_Type::KEY_TYPE_EC)
         {
             // -----BEGIN EC PRIVATE KEY-----
             // -----END EC PRIVATE KEY-----
             headerText = "EC PRIVATE KEY";
         }
-        else if (!_keyTypeAndVariant)
+        else if (!_keyType)
         {
             // Generic
             headerText = "ENCRYPTION KEY";
         }
         else
         {
-            auto found = std::find_if(std::begin(supportedKeyTypes), std::end(supportedKeyTypes), [&](auto &&p) { return p.second == _keyTypeAndVariant; });
+            auto found = std::find_if(std::begin(Common::supportedKeyTypes), std::end(Common::supportedKeyTypes), [&](auto &&p) { return p.second == _keyType; });
 
-            if (found != supportedKeyTypes.end())
+            if (found != Common::supportedKeyTypes.end())
             {
                 // All others
                 headerText = found->first + " ENCRYPTION KEY";

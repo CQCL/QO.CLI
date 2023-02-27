@@ -42,7 +42,7 @@ namespace Quantinuum::QuantumOrigin::Cli::Commands
         std::vector<uint8_t> _seed;
         uint64_t _counter;
         std::vector<uint8_t> _encryptedData;
-        std::optional<KeyTypeAndVariant> _keyTypeAndVariant;
+        std::optional<Common::KeyType> _keyType;
 
         // Decrypted result
         std::vector<uint8_t> _pPlainTextOut;
@@ -59,10 +59,10 @@ namespace Quantinuum::QuantumOrigin::Cli::Commands
         /// @param seed The seed as returned by the API.
         /// @param counter The counter as returned by the API.
         /// @param encryptedData The encrypted data as returned by the API.
-        /// @param keyTypeAndVariant The type of key/data that is being decrypted.
+        /// @param keyType The type of key that is being decrypted.
         CliDecrypt(
             const std::vector<uint8_t> &sharedSecret, const std::vector<uint8_t> &nonce, std::vector<uint8_t> seed, uint64_t counter, std::vector<uint8_t> encryptedData,
-            std::optional<KeyTypeAndVariant> keyTypeAndVariant = std::nullopt);
+            std::optional<Common::KeyType> keyType = std::nullopt);
 
         /// A custom destructor is defined to provide Zeroisation for shared secret and any decrypted text
         ~CliDecrypt();

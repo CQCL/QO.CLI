@@ -21,6 +21,7 @@ endif()
 
 add_library(qo_common
         src/exceptions.cpp
+        src/key_parameters.cpp
         src/key_request.cpp
         src/key_response.cpp
         src/onboard_request.cpp

@@ -18,6 +18,7 @@
 #include <api_parameters.h>
 #include <decryption_parameters.h>
 
+#include <qo_common/key_parameters.h>
 #include <qo_common/parameters.h>
 
 #include <optional>
@@ -30,13 +31,14 @@ namespace Quantinuum::QuantumOrigin::Cli::Commands::Keygen
     class KeyParameters
     {
       public:
-        std::string json; // TODO: Use keytype-specific parameters instead of raw JSON
+        std::string json; // Parameters read as a raw JSON
     };
 
     class KeygenParameters : public IParameters
     {
       public:
         ApiParameters apiParameters;
+        std::optional<Common::KeyAlgorithm> keyAlgorithm;
         std::optional<Common::KeyType> keyType;
         KeyParameters keyParameters;
 
